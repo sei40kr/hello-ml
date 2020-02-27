@@ -1,3 +1,5 @@
+#+TITLE: 回帰の実装
+
 #+BEGIN_SRC jupyter-python :session py
 import numpy as np
 import matplotlib.pyplot as plt

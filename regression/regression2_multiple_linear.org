@@ -1,3 +1,5 @@
+#+TITLE: 多項式回帰の実装
+
 #+BEGIN_SRC jupyter-python :session py :dir .
 import numpy as np
 import matplotlib.pyplot as plt
