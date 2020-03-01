@@ -25,7 +25,7 @@ plt.show()
 #+END_SRC
 
 #+RESULTS:
-[[file:./.ob-jupyter/7078b3d4ebf2eefc79dac6325d07fb6e03422052.png]]
+[[file:./.ob-jupyter/6a3c7b6b839e52c0d05eba0f29900b81cf4aff75.png]]
 
 #+begin_src jupyter-python :session py :dir .
 # 標準化
@@ -96,7 +96,7 @@ plt.show()
 #+end_src
 
 #+RESULTS:
-[[file:./.ob-jupyter/5bb2779922049313592f714f343dfc5b56b26e19.png]]
+[[file:./.ob-jupyter/2dc39f8af4317ca3de0aff87f02fbf220a06ef0d.png]]
 
 #+begin_src jupyter-python :session py :dir .
 # 正則化
@@ -127,4 +127,24 @@ plt.show()
 #+end_src
 
 #+RESULTS:
-[[file:./.ob-jupyter/39e7a8182b7447b23ea2fac66517b222ee8d3ee0.png]]
+[[file:./.ob-jupyter/17447ebdd59f540d5e52531ff8e81e4c7ef0df6c.png]]
+
+#+begin_src jupyter-python :session py :dir .
+# 正則化ありのパラメータを保存
+theta2 = theta
+
+plt.plot(train_z, train_y, 'o')
+
+# 正則化なしの結果をプロット
+theta = theta1
+plt.plot(z, f(to_matrix(z)), linestyle='dashed')
+
+# 正則化ありの結果をプロット
+theta = theta2
+plt.plot(z, f(to_matrix(z)))
+
+plt.show()
+#+end_src
+
+#+RESULTS:
+[[file:./.ob-jupyter/42a938338a49bd07dc9e3107e55d0d6db399cc48.png]]
