@@ -60,3 +60,31 @@ plt.show()
 
 #+RESULTS:
 [[file:./.ob-jupyter/6345256acf78d5a84e3befec47b054189bdb58c4.png]]
+
+#+begin_src jupyter-python :session py :dir .
+def classify(x):
+    return (f(x) >= 0.5).astype(np.int)
+
+# パラメータを初期化
+theta = np.random.rand(4)
+
+# 精度の履歴
+accuracies = []
+
+# 学習を繰り返す
+for _ in range(epoch):
+    theta = theta - eta * np.dot(f(X) - train_y, X)
+    # 現在の精度を計算
+    result = classify(X) == train_y
+    accuracy = len(result[result == True]) / len(result)
+    accuracies.append(accuracy)
+
+# 精度をプロット
+x = np.arange(len(accuracies))
+
+plt.plot(x, accuracies)
+plt.show()
+#+end_src
+
+#+RESULTS:
+[[file:./.ob-jupyter/349eb96b241bac5f9b71e85b22f600a518d4f6ab.png]]
