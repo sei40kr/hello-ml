@@ -1,0 +1,545 @@
+#+BEGIN_SRC jupyter-python :session py :async yes
+import numpy as np
+import pandas as pd
+
+# Jupyter Notebook の出力を小数点以下 3 桁に抑える
+%precision 3
+# Dataframe nお出力を小数点以下 3 桁に抑える
+pd.set_option('precision', 3)
+#+END_SRC
+
+#+RESULTS:
+
+#+begin_src jupyter-python :session py :async yes
+df = pd.read_csv('../data/ch2_scores_em.csv', index_col='生徒番号')
+
+# df の最初 5 行を表示
+df.head()
+#+end_src
+
+#+RESULTS:
+:       英語  数学
+: 生徒番号
+: 1     42  65
+: 2     69  80
+: 3     56  63
+: 4     41  63
+: 5     57  76
+
+#+begin_src jupyter-python :session py :async yes
+scores = np.array(df['英語'])[:10]
+scores
+#+end_src
+
+#+RESULTS:
+: array([42, 69, 56, 41, 57, 48, 65, 49, 65, 58])
+
+#+begin_src jupyter-python :session py :async yes
+scores_df = pd.DataFrame({ '点数': scores },
+                         index=pd.Index(['A', 'B', 'C', 'D', 'E',
+                                         'F', 'G', 'H', 'I', 'J'],
+                                        name='生徒'))
+scores_df
+#+end_src
+
+#+RESULTS:
+#+begin_example
+    点数
+生徒
+A   42
+B   69
+C   56
+D   41
+E   57
+F   48
+G   65
+H   49
+I   65
+J   58
+#+end_example
+
+#+begin_src jupyter-python :session py :async yes
+sum(scores) / len(scores)
+#+end_src
+
+#+RESULTS:
+: 55.0
+
+#+begin_src jupyter-python :session py :async yes
+np.mean(scores)
+#+end_src
+
+#+RESULTS:
+: 55.0
+
+#+begin_src jupyter-python :session py :async yes
+scores_df.mean()
+#+end_src
+
+#+RESULTS:
+: 点数    55.0
+: dtype: float64
+
+#+begin_src jupyter-python :session py :async yes
+sorted_scores = np.sort(scores)
+sorted_scores
+#+end_src
+
+#+RESULTS:
+: array([41, 42, 48, 49, 56, 57, 58, 65, 65, 69])
+
+#+begin_src jupyter-python :session py :async yes
+n = len(sorted_scores)
+if n % 2 == 0:
+    m0 = sorted_scores[n//2 - 1]
+    m1 = sorted_scores[n//2]
+    median = (m0 + m1) / 2
+else:
+    median = sorted_scores[(n+1)//2 - 1]
+median
+#+end_src
+
+#+RESULTS:
+: 56.5
+
+#+begin_src jupyter-python :session py :async yes
+np.median(scores)
+#+end_src
+
+#+RESULTS:
+: 56.5
+
+#+begin_src jupyter-python :session py :async yes
+scores_df.median()
+#+end_src
+
+#+RESULTS:
+: 点数    56.5
+: dtype: float64
+
+#+begin_src jupyter-python :session py :async yes
+pd.Series([1, 1, 1, 2, 2, 3]).mode()
+#+end_src
+
+#+RESULTS:
+: 0    1
+: dtype: int64
+
+#+begin_src jupyter-python :session py :async yes
+pd.Series([1, 2, 3, 4, 5]).mode()
+#+end_src
+
+#+RESULTS:
+: 0    1
+: 1    2
+: 2    3
+: 3    4
+: 4    5
+: dtype: int64
+
+#+begin_src jupyter-python :session py :async yes
+mean = np.mean(scores)
+deviation = scores - mean
+deviation
+#+end_src
+
+#+RESULTS:
+: array([-13.,  14.,   1., -14.,   2.,  -7.,  10.,  -6.,  10.,   3.])
+
+#+begin_src jupyter-python :session py :async yes
+another_scores = [50, 60, 58, 54, 51, 56, 57, 53, 52, 59]
+another_mean = np.mean(another_scores)
+another_deviation = another_scores - another_mean
+another_deviation
+#+end_src
+
+#+RESULTS:
+: array([-5.,  5.,  3., -1., -4.,  1.,  2., -2., -3.,  4.])
+
+#+begin_src jupyter-python :session py :async yes
+np.mean(deviation)
+#+end_src
+
+#+RESULTS:
+: 0.0
+
+#+begin_src jupyter-python :session py :async yes
+np.mean(another_deviation)
+#+end_src
+
+#+RESULTS:
+: 0.0
+
+#+begin_src jupyter-python :session py :async yes
+summary_df = scores_df.copy()
+summary_df['偏差'] = deviation
+summary_df
+#+end_src
+
+#+RESULTS:
+#+begin_example
+    点数    偏差
+生徒
+A   42 -13.0
+B   69  14.0
+C   56   1.0
+D   41 -14.0
+E   57   2.0
+F   48  -7.0
+G   65  10.0
+H   49  -6.0
+I   65  10.0
+J   58   3.0
+#+end_example
+
+#+begin_src jupyter-python :session py :async yes
+summary_df.mean()
+#+end_src
+
+#+RESULTS:
+: 点数    55.0
+: 偏差     0.0
+: dtype: float64
+
+#+begin_src jupyter-python :session py :async yes
+np.mean(deviation ** 2)
+#+end_src
+
+#+RESULTS:
+: 86.0
+
+#+begin_src jupyter-python :session py :async yes
+np.var(scores)
+#+end_src
+
+#+RESULTS:
+: 86.0
+
+#+begin_src jupyter-python :session py :async yes
+scores_df.var()
+#+end_src
+
+#+RESULTS:
+: 点数    95.556
+: dtype: float64
+
+#+begin_src jupyter-python :session py :async yes
+summary_df['偏差二乗'] = np.square(deviation)
+summary_df
+#+end_src
+
+#+RESULTS:
+#+begin_example
+    点数    偏差   偏差二乗
+生徒
+A   42 -13.0  169.0
+B   69  14.0  196.0
+C   56   1.0    1.0
+D   41 -14.0  196.0
+E   57   2.0    4.0
+F   48  -7.0   49.0
+G   65  10.0  100.0
+H   49  -6.0   36.0
+I   65  10.0  100.0
+J   58   3.0    9.0
+#+end_example
+
+#+begin_src jupyter-python :session py :async yes
+summary_df.mean()
+#+end_src
+
+#+RESULTS:
+: 点数      55.0
+: 偏差       0.0
+: 偏差二乗    86.0
+: dtype: float64
+
+#+begin_src jupyter-python :session py :async yes
+np.sqrt(np.var(scores, ddof=0))
+#+end_src
+
+#+RESULTS:
+: 9.273618495495704
+
+#+begin_src jupyter-python :session py :async yes
+np.std(scores, ddof=0)
+#+end_src
+
+#+RESULTS:
+: 9.273618495495704
+
+#+begin_src jupyter-python :session py :async yes
+np.max(scores) - np.min(scores)
+#+end_src
+
+#+RESULTS:
+: 28
+
+#+begin_src jupyter-python :session py :async yes
+scores_Q1 = np.percentile(scores, 25)
+scores_Q3 = np.percentile(scores, 75)
+scores_IQR = scores_Q3 - scores_Q1
+scores_IQR
+#+end_src
+
+#+RESULTS:
+: 15.0
+
+#+begin_src jupyter-python :session py :async yes
+pd.Series(scores).describe()
+#+end_src
+
+#+RESULTS:
+: count    10.000
+: mean     55.000
+: std       9.775
+: min      41.000
+: 25%      48.250
+: 50%      56.500
+: 75%      63.250
+: max      69.000
+: dtype: float64
+
+#+begin_src jupyter-python :session py :async yes
+z = (scores - np.mean(scores)) / np.std(scores)
+z
+#+end_src
+
+#+RESULTS:
+: array([-1.402,  1.51 ,  0.108, -1.51 ,  0.216, -0.755,  1.078, -0.647,
+:         1.078,  0.323])
+
+#+begin_src jupyter-python :session py :async yes
+np.mean(z), np.std(z, ddof=0)
+#+end_src
+
+#+RESULTS:
+| -1.6653345369377347e-17 | 0.9999999999999999 |
+
+#+begin_src jupyter-python :session py :async yes
+z = 50 + 10 * (scores - np.mean(scores)) / np.std(scores)
+z
+#+end_src
+
+#+RESULTS:
+: array([35.982, 65.097, 51.078, 34.903, 52.157, 42.452, 60.783, 43.53 ,
+:        60.783, 53.235])
+
+#+begin_src jupyter-python :session py :async yes
+scores_df['偏差値'] = z
+scores_df
+#+end_src
+
+#+RESULTS:
+#+begin_example
+    点数     偏差値
+生徒
+A   42  35.982
+B   69  65.097
+C   56  51.078
+D   41  34.903
+E   57  52.157
+F   48  42.452
+G   65  60.783
+H   49  43.530
+I   65  60.783
+J   58  53.235
+#+end_example
+
+#+begin_src jupyter-python :session py :async yes
+# 50 人分の英語の点数の array
+english_scores = np.array(df['英語'])
+# Series に変換して describe を表示
+pd.Series(english_scores).describe()
+#+end_src
+
+#+RESULTS:
+: count    50.00
+: mean     58.38
+: std       9.80
+: min      37.00
+: 25%      54.00
+: 50%      57.50
+: 75%      65.00
+: max      79.00
+: dtype: float64
+
+#+begin_src jupyter-python :session py :async yes
+freq, _ = np.histogram(english_scores, bins=10, range=(0, 100))
+freq
+#+end_src
+
+#+RESULTS:
+: array([ 0,  0,  0,  2,  8, 16, 18,  6,  0,  0])
+
+#+begin_src jupyter-python :session py :async yes
+# 0~10, 10~20, ... といった文字列のリストを作る
+freq_class = [f'{i}~{i+10}' for i in range(0, 100, 10)]
+
+# freq_class をインデックスにして freq で DataFrame を作る
+freq_dist_df = pd.DataFrame({ '度数': freq },
+                            index=pd.Index(freq_class, name='階級'))
+freq_dist_df
+#+end_src
+
+#+RESULTS:
+#+begin_example
+        度数
+階級
+0~10     0
+10~20    0
+20~30    0
+30~40    2
+40~50    8
+50~60   16
+60~70   18
+70~80    6
+80~90    0
+90~100   0
+#+end_example
+
+#+begin_src jupyter-python :session py :async yes
+class_value = [(i + (i + 10))//2 for i in range(0, 100, 10)]
+class_value
+#+end_src
+
+#+RESULTS:
+| 5 | 15 | 25 | 35 | 45 | 55 | 65 | 75 | 85 | 95 |
+
+#+begin_src jupyter-python :session py :async yes
+rel_freq = freq / freq.sum()
+rel_freq
+#+end_src
+
+#+RESULTS:
+: array([0.  , 0.  , 0.  , 0.04, 0.16, 0.32, 0.36, 0.12, 0.  , 0.  ])
+
+#+begin_src jupyter-python :session py :async yes
+cum_rel_freq = np.cumsum(rel_freq)
+cum_rel_freq
+#+end_src
+
+#+RESULTS:
+: array([0.  , 0.  , 0.  , 0.04, 0.2 , 0.52, 0.88, 1.  , 1.  , 1.  ])
+
+#+begin_src jupyter-python :session py :async yes
+freq_dist_df['階級値'] = class_value
+freq_dist_df['相対度数'] = rel_freq
+freq_dist_df['累計相対度数'] = cum_rel_freq
+freq_dist_df = freq_dist_df[['階級値', '度数', '相対度数', '累計相対度数']]
+freq_dist_df
+#+end_src
+
+#+RESULTS:
+#+begin_example
+        階級値  度数  相対度数  累計相対度数
+階級
+0~10      5   0  0.00    0.00
+10~20    15   0  0.00    0.00
+20~30    25   0  0.00    0.00
+30~40    35   2  0.04    0.04
+40~50    45   8  0.16    0.20
+50~60    55  16  0.32    0.52
+60~70    65  18  0.36    0.88
+70~80    75   6  0.12    1.00
+80~90    85   0  0.00    1.00
+90~100   95   0  0.00    1.00
+#+end_example
+
+#+begin_src jupyter-python :session py :async yes
+freq_dist_df.loc[freq_dist_df['度数'].idxmax(), '階級値']
+#+end_src
+
+#+RESULTS:
+: 65
+
+#+begin_src jupyter-python :session py :async yes
+# Matplotlib の pyplot モジュールを plt という名前でインポート
+import matplotlib.pyplot as plt
+# グラフが notebook 上に表示されるようにする
+%matplotlib inline
+#+end_src
+
+#+RESULTS:
+
+#+begin_src jupyter-python :session py :async yes
+# キャンバスを作る
+# figsize で横, 縦の大きさを指定
+fig = plt.figure(figsize=(10, 6))
+# キャンバス上にグラフを描画するための領域を作る
+# 引数は領域を 1x1 個作り、1 つ目の領域に描画することを意味する
+ax = fig.add_subplot(111)
+
+# 階級数を 10 にしてヒストグラムを描画
+freq, _, _ = ax.hist(english_scores, bins=10, range=(0, 100))
+# X 軸にラベルをつける
+ax.set_xlabel('Scores')
+# Y 軸にラベルをつける
+ax.set_ylabel('Frequency')
+# X 軸に 0, 10, 20, ..., 100 の目盛りをふる
+ax.set_xticks(np.linspace(0, 100, 10+1))
+# Y 軸に 0, 1, 2, ... の目盛りをふる
+ax.set_yticks(np.arange(0, freq.max()+1))
+# グラフの表示
+plt.show()
+#+end_src
+
+#+RESULTS:
+[[file:./.ob-jupyter/a38a6c5bfdf931452f81fb2cd85be041bc4d7272.png]]
+
+#+begin_src jupyter-python :session py :async yes
+fig = plt.figure(figsize=(10,6))
+ax = fig.add_subplot(111)
+
+freq, _, _ = ax.hist(english_scores, bins=25, range=(0, 100))
+ax.set_xlabel('Scores')
+ax.set_ylabel('Frequency')
+ax.set_xticks(np.linspace(0, 100, 25+1))
+ax.set_yticks(np.arange(0, freq.max()+1))
+plt.show()
+#+end_src
+
+#+RESULTS:
+[[file:./.ob-jupyter/d7427da2f5369d00d211022ac68abf987a787f79.png]]
+
+#+begin_src jupyter-python :session py :async yes
+fig = plt.figure(figsize=(10, 6))
+ax1 = fig.add_subplot(111)
+# Y 軸のスケールが違うグラフを ax1 と同じ領域上に描けるようにする
+ax2 = ax1.twinx()
+
+# 相対度数のヒストグラムにするためには、度数をデータの数で割る必要がある
+# これは hist の引数 weight を指定することで実現できる
+weights = np.ones_like(english_scores) / len(english_scores)
+rel_freq, _, _ = ax1.hist(english_scores, bins=25, range=(0, 100), weights=weights)
+cum_rel_freq = np.cumsum(rel_freq)
+class_value = [(i+(i+4))//2 for i in range(0, 100, 4)]
+# 折れ線グラフの描画
+# 引数 ls を '--' にすることで線が点線に
+# 引数 marker を 'o' にすることでデータ点を丸に
+# 引数 color を 'gray' にすることで灰色に
+ax2.plot(class_value, cum_rel_freq, ls='--', marker='o', color='gray')
+# 折れ線グラフの罫線を消去
+ax2.grid(visible=False)
+
+ax1.set_xlabel('Scores')
+ax1.set_ylabel('Relative Frequency')
+ax2.set_ylabel('Cumulative Relative Frequency')
+ax1.set_xticks(np.linspace(0, 100, 25+1))
+
+plt.show()
+#+end_src
+
+#+RESULTS:
+[[file:./.ob-jupyter/8c7085ad6afc11ca2b6f3d4841eac86be0fcb272.png]]
+
+#+begin_src jupyter-python :session py :async yes
+fig = plt.figure(figsize=(5, 6))
+ax = fig.add_subplot(111)
+ax.boxplot(english_scores, labels=['English'])
+
+plt.show()
+#+end_src
+
+#+RESULTS:
+[[file:./.ob-jupyter/f55b78c94a2de6d438b13e72dc083fcc1f617b68.png]]

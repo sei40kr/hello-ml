@@ -1,0 +1,183 @@
+#+begin_src jupyter-python :session py :async yes
+import numpy as np
+
+x = np.array([1.0, 2.0, 3.0])
+print(x)
+#+end_src
+
+#+RESULTS:
+: [1. 2. 3.]
+
+#+begin_src jupyter-python :session py :async yes
+type(x)
+#+end_src
+
+#+RESULTS:
+: numpy.ndarray
+
+#+begin_src jupyter-python :session py :async yes
+y = np.array([2.0, 4.0, 6.0])
+
+x - y
+#+end_src
+
+#+RESULTS:
+: array([-1., -2., -3.])
+
+#+begin_src jupyter-python :session py :async yes
+x * y
+#+end_src
+
+#+RESULTS:
+: array([ 2.,  8., 18.])
+
+#+begin_src jupyter-python :session py :async yes
+x + y
+#+end_src
+
+#+RESULTS:
+: array([3., 6., 9.])
+
+#+begin_src jupyter-python :session py :async yes
+x / y
+#+end_src
+
+#+RESULTS:
+: array([0.5, 0.5, 0.5])
+
+#+begin_src jupyter-python :session py :async yes
+x / 2.0
+#+end_src
+
+#+RESULTS:
+: array([0.5, 1. , 1.5])
+
+#+begin_src jupyter-python :session py :async yes
+A = np.array([[1, 2], [3, 4]])
+print(A)
+#+end_src
+
+#+RESULTS:
+: [[1 2]
+:  [3 4]]
+
+#+begin_src jupyter-python :session py :async yes
+A.shape
+#+end_src
+
+#+RESULTS:
+| 2 | 2 |
+
+#+begin_src jupyter-python :session py :async yes
+A.dtype
+#+end_src
+
+#+RESULTS:
+: dtype('int64')
+
+#+begin_src jupyter-python :session py :async yes
+B = np.array([[3, 0], [0, 6]])
+A + B
+#+end_src
+
+#+RESULTS:
+: array([[ 4,  2],
+:        [ 3, 10]])
+
+#+begin_src jupyter-python :session py :async yes
+A * B
+#+end_src
+
+#+RESULTS:
+: array([[ 3,  0],
+:        [ 0, 24]])
+
+#+begin_src jupyter-python :session py :async yes
+print(A)
+#+end_src
+
+#+RESULTS:
+: [[1 2]
+:  [3 4]]
+
+#+begin_src jupyter-python :session py :async yes
+A * 10
+#+end_src
+
+#+RESULTS:
+: array([[10, 20],
+:        [30, 40]])
+
+#+begin_src jupyter-python :session py :async yes
+B = np.array([10,20])
+A * B
+#+end_src
+
+#+RESULTS:
+: array([[10, 40],
+:        [30, 80]])
+
+#+begin_src jupyter-python :session py :async yes
+X = np.array([[51,55],[14,19],[0,4]])
+print(X)
+#+end_src
+
+#+RESULTS:
+: [[51 55]
+:  [14 19]
+:  [ 0  4]]
+
+#+begin_src jupyter-python :session py :async yes
+X[0]
+#+end_src
+
+#+RESULTS:
+: array([51, 55])
+
+#+begin_src jupyter-python :session py :async yes
+X[0][1]
+#+end_src
+
+#+RESULTS:
+: 55
+
+#+begin_src jupyter-python :session py :async yes
+for row in X:
+    print(row)
+#+end_src
+
+#+RESULTS:
+: [51 55]
+: [14 19]
+: [0 4]
+
+#+begin_src jupyter-python :session py :async yes
+X = X.flatten()
+print(X)
+#+end_src
+
+#+RESULTS:
+: [51 55 14 19  0  4]
+
+#+begin_src jupyter-python :session py :async yes
+X[np.array([0, 2, 4])]
+#+end_src
+
+#+RESULTS:
+: array([51, 14,  0])
+
+#+begin_src jupyter-python :session py :async yes
+X > 15
+#+end_src
+
+#+RESULTS:
+: array([[ True,  True],
+:        [False,  True],
+:        [False, False]])
+
+#+begin_src jupyter-python :session py :async yes
+X[X > 15]
+#+end_src
+
+#+RESULTS:
+: array([51, 55, 19])

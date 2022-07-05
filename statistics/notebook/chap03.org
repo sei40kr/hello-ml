@@ -1,0 +1,269 @@
+#+BEGIN_SRC jupyter-python :session py :async yes
+import numpy as np
+import pandas as pd
+
+%precision 3
+pd.set_option('precision', 3)
+#+END_SRC
+
+#+RESULTS:
+
+#+begin_src jupyter-python :session py :async yes
+df = pd.read_csv('../data/ch2_scores_em.csv', index_col='生徒番号')
+#+end_src
+
+#+RESULTS:
+
+#+begin_src jupyter-python :session py :async yes
+en_scores = np.array(df['英語'])[:10]
+ma_scores = np.array(df['数学'])[:10]
+#+end_src
+
+#+RESULTS:
+
+#+begin_src jupyter-python :session py :async yes
+scores_df = pd.DataFrame({ '英語': en_scores,
+                           '数学': ma_scores },
+                         index=pd.Index(['A', 'B', 'C', 'D', 'E',
+                                         'F', 'G', 'H', 'I', 'J'],
+                                        name='生徒'))
+scores_df
+#+end_src
+
+#+RESULTS:
+#+begin_example
+    英語  数学
+生徒
+A   42  65
+B   69  80
+C   56  63
+D   41  63
+E   57  76
+F   48  60
+G   65  81
+H   49  66
+I   65  78
+J   58  82
+#+end_example
+
+#+begin_src jupyter-python :session py :async yes
+summary_df = scores_df.copy()
+summary_df['英語の偏差'] = summary_df['英語'] - summary_df['英語'].mean()
+summary_df['数学の偏差'] = summary_df['数学'] - summary_df['数学'].mean()
+summary_df['偏差同士の積'] = summary_df['英語の偏差'] * summary_df['数学の偏差']
+summary_df
+#+end_src
+
+#+RESULTS:
+#+begin_example
+    英語  数学  英語の偏差  数学の偏差  偏差同士の積
+生徒
+A   42  65  -13.0   -6.4    83.2
+B   69  80   14.0    8.6   120.4
+C   56  63    1.0   -8.4    -8.4
+D   41  63  -14.0   -8.4   117.6
+E   57  76    2.0    4.6     9.2
+F   48  60   -7.0  -11.4    79.8
+G   65  81   10.0    9.6    96.0
+H   49  66   -6.0   -5.4    32.4
+I   65  78   10.0    6.6    66.0
+J   58  82    3.0   10.6    31.8
+#+end_example
+
+#+begin_src jupyter-python :session py :async yes
+summary_df['偏差同士の積'].mean()
+#+end_src
+
+#+RESULTS:
+: 62.8
+
+#+begin_src jupyter-python :session py :async yes
+cov_mat = np.cov(en_scores, ma_scores, ddof=0)
+cov_mat
+#+end_src
+
+#+RESULTS:
+: array([[86.  , 62.8 ],
+:        [62.8 , 68.44]])
+
+#+begin_src jupyter-python :session py :async yes
+cov_mat[0,0], cov_mat[1, 1]
+#+end_src
+
+#+RESULTS:
+| 86.0 | 68.44000000000001 |
+
+#+begin_src jupyter-python :session py :async yes
+np.var(en_scores, ddof=0), np.var(ma_scores, ddof=0)
+#+end_src
+
+#+RESULTS:
+| 86.0 | 68.44000000000001 |
+
+#+begin_src jupyter-python :session py :async yes
+np.cov(en_scores, ma_scores, ddof=0)[0, 1] /\
+    (np.std(en_scores * np.std(ma_scores)))
+#+end_src
+
+#+RESULTS:
+: 0.8185692341186714
+
+#+begin_src jupyter-python :session py :async yes
+np.corrcoef(en_scores, ma_scores)
+#+end_src
+
+#+RESULTS:
+: array([[1.   , 0.819],
+:        [0.819, 1.   ]])
+
+#+begin_src jupyter-python :session py :async yes
+scores_df.corr()
+#+end_src
+
+#+RESULTS:
+:        英語     数学
+: 英語  1.000  0.819
+: 数学  0.819  1.000
+
+#+begin_src jupyter-python :session py :async yes
+import matplotlib.pyplot as plt
+
+%matplotlib inline
+#+end_src
+
+#+RESULTS:
+
+#+begin_src jupyter-python :session py :async yes
+english_scores = np.array(df['英語'])
+math_scores = np.array(df['数学'])
+
+fig = plt.figure(figsize=(8, 8))
+ax = fig.add_subplot(111)
+# 散布図
+ax.scatter(english_scores, math_scores)
+ax.set_xlabel('English')
+ax.set_ylabel('Mathematics')
+
+plt.show()
+#+end_src
+
+#+RESULTS:
+[[file:./.ob-jupyter/9e31a4c717d6371dc0ab8b11e0077f365fff269f.png]]
+#+RESULTS:
+
+#+begin_src jupyter-python :session py :async yes
+# 係数 β_0 と β_1 を求める
+poly_fit = np.polyfit(english_scores, math_scores, 1)
+# β_0+β_1 x を返す関数を作る
+poly_1d = np.poly1d(poly_fit)
+# 直線を描画するための x 座標を作る
+xs = np.linspace(english_scores.min(), english_scores.max())
+# xs に対応する y 座標を求める
+ys = poly_1d(xs)
+
+fig = plt.figure(figsize=(8, 8))
+ax = fig.add_subplot(111)
+ax.set_xlabel('English')
+ax.set_ylabel('Mathematics')
+ax.scatter(english_scores, math_scores, label='Scores')
+ax.plot(xs, ys, color='gray',
+        label=f'{poly_fit[1]:.2f}+{poly_fit[0]:.2f}x')
+# 凡例の表示
+ax.legend(loc='upper left')
+
+plt.show()
+#+end_src
+
+#+RESULTS:
+[[file:./.ob-jupyter/f6263640bb170cdddaadcbeba7973922f4b1faa4.png]]
+
+#+begin_src jupyter-python :session py :async yes
+fig = plt.figure(figsize=(10, 8))
+ax = fig.add_subplot(111)
+
+c = ax.hist2d(english_scores, math_scores,
+              bins=[9, 8], range=[(35, 80), (55, 95)])
+ax.set_xticks(c[1])
+ax.set_yticks(c[2])
+# カラーバーの表示
+fig.colorbar(c[3], ax=ax)
+plt.show()
+#+end_src
+
+#+RESULTS:
+[[file:./.ob-jupyter/de79bb2434c474f4035ca123ddab248fab59fbd3.png]]
+
+#+begin_src jupyter-python :session py :async yes
+anscombe_data = np.load('../data/ch3_anscombe.npy')
+print(anscombe_data.shape)
+anscombe_data[0]
+#+end_src
+
+#+RESULTS:
+:RESULTS:
+: (4, 11, 2)
+#+begin_example
+array([[10.  ,  8.04],
+       [ 8.  ,  6.95],
+       [13.  ,  7.58],
+       [ 9.  ,  8.81],
+       [11.  ,  8.33],
+       [14.  ,  9.96],
+       [ 6.  ,  7.24],
+       [ 4.  ,  4.26],
+       [12.  , 10.84],
+       [ 7.  ,  4.82],
+       [ 5.  ,  5.68]])
+#+end_example
+:END:
+
+#+begin_src jupyter-python :session py :async yes
+stats_df = pd.DataFrame(index=['X の平均', 'X の分散', 'Y の平均', 'Y の分散',
+                               'X と Y の相関係数', 'X と Y の回帰直線'])
+for i, data in enumerate(anscombe_data):
+    dataX = data[:, 0]
+    dataY = data[:, 1]
+    poly_fit = np.polyfit(dataX, dataY, 1)
+    stats_df[f'data{i+1}'] = [f'{np.mean(dataX):.2f}',
+                              f'{np.var(dataX):.2f}',
+                              f'{np.mean(dataY):.2f}',
+                              f'{np.var(dataY):.2f}',
+                              f'{np.corrcoef(dataX, dataY)[0, 1]:.2f}',
+                              f'{poly_fit[1]:.2f}+{poly_fit[0]:.2f}x']
+stats_df
+#+end_src
+
+#+RESULTS:
+:                   data1       data2       data3       data4
+: X の平均              9.00        9.00        9.00        9.00
+: X の分散             10.00       10.00       10.00       10.00
+: Y の平均              7.50        7.50        7.50        7.50
+: Y の分散              3.75        3.75        3.75        3.75
+: X と Y の相関係数        0.82        0.82        0.82        0.82
+: X と Y の回帰直線  3.00+0.50x  3.00+0.50x  3.00+0.50x  3.00+0.50x
+
+#+begin_src jupyter-python :session py :async yes
+# グラフを描画する領域を 2x2 個作る
+fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(10, 10),
+                         sharex=True, sharey=True)
+xs = np.linspace(0, 30, 100)
+for i, data in enumerate(anscombe_data):
+    poly_fit = np.polyfit(data[:, 0], data[:, 1], 1)
+    poly_1d = np.poly1d(poly_fit)
+    ys = poly_1d(xs)
+    # 描画する領域の選択
+    ax = axes[i//2, i%2]
+    ax.set_xlim([4, 20])
+    ax.set_ylim([3, 13])
+    # タイトルをつける
+    ax.set_title(f'data{i+1}')
+    ax.scatter(data[:, 0], data[:, 1])
+    ax.plot(xs, ys, color='gray')
+
+# グラフ同士の間隔を狭くする
+plt.tight_layout()
+plt.show()
+#+end_src
+
+#+RESULTS:
+[[file:./.ob-jupyter/97fe8811ec8e28a183ec72b798a70b1c9693d385.png]]

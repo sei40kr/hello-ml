@@ -1,0 +1,205 @@
+#+BEGIN_SRC jupyter-python :session py :async yes
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+%precision 3
+%matplotlib inline
+#+END_SRC
+
+#+RESULTS:
+
+#+begin_src jupyter-python :session py :async yes
+df = pd.read_csv('../data/ch4_scores400.csv')
+scores = np.array(df['点数'])
+scores[:10]
+#+end_src
+
+#+RESULTS:
+: array([76, 55, 80, 80, 74, 61, 81, 76, 23, 80])
+
+#+begin_src jupyter-python :session py :async yes
+np.random.choice([1, 2, 3], 3)
+#+end_src
+
+#+RESULTS:
+: array([2, 1, 1])
+
+#+begin_src jupyter-python :session py :async yes
+np.random.choice([1, 2, 3], 3, replace=False)
+#+end_src
+
+#+RESULTS:
+: array([1, 3, 2])
+
+#+begin_src jupyter-python :session py :async yes
+np.random.seed(0)
+np.random.choice([1, 2, 3], 3)
+#+end_src
+
+#+RESULTS:
+: array([1, 2, 1])
+
+#+begin_src jupyter-python :session py :async yes
+np.random.seed(0)
+sample = np.random.choice(scores, 20)
+sample.mean()
+#+end_src
+
+#+RESULTS:
+: 70.4
+
+#+begin_src jupyter-python :session py :async yes
+scores.mean()
+#+end_src
+
+#+RESULTS:
+: 69.53
+
+#+begin_src jupyter-python :session py :async yes
+for i in range(5):
+    sample = np.random.choice(scores, 20)
+    print(f'{i+1}回目の無作為抽出で得た標本平均', sample.mean())
+#+end_src
+
+#+RESULTS:
+: 1回目の無作為抽出で得た標本平均 72.45
+: 2回目の無作為抽出で得た標本平均 63.7
+: 3回目の無作為抽出で得た標本平均 66.05
+: 4回目の無作為抽出で得た標本平均 71.7
+: 5回目の無作為抽出で得た標本平均 74.15
+
+#+begin_src jupyter-python :session py :async yes
+dice = [1, 2, 3, 4, 5, 6]
+prob = [1 / 21, 2 / 21, 3 / 21, 4 / 21, 5 / 21, 6 / 21]
+#+end_src
+
+#+RESULTS:
+
+#+begin_src jupyter-python :session py :async yes
+np.random.choice(dice, p=prob)
+#+end_src
+
+#+RESULTS:
+: 1
+
+#+begin_src jupyter-python :session py :async yes
+num_trial = 100
+sample = np.random.choice(dice, num_trial, p=prob)
+sample
+#+end_src
+
+#+RESULTS:
+: array([4, 6, 4, 5, 5, 6, 6, 3, 5, 6, 5, 6, 6, 2, 3, 1, 6, 5, 6, 3, 4, 5,
+:        3, 4, 3, 5, 5, 4, 4, 6, 4, 6, 5, 6, 5, 4, 6, 2, 6, 4, 5, 3, 4, 6,
+:        5, 5, 5, 3, 4, 5, 4, 4, 6, 4, 4, 6, 6, 2, 2, 4, 5, 1, 6, 4, 3, 2,
+:        2, 6, 3, 5, 4, 2, 4, 4, 6, 6, 1, 5, 3, 6, 6, 4, 2, 1, 6, 4, 4, 2,
+:        4, 1, 3, 6, 6, 6, 4, 5, 4, 3, 3, 4])
+
+#+begin_src jupyter-python :session py :async yes
+freq, _ = np.histogram(sample, bins=6, range=(1, 7))
+pd.DataFrame(
+    {"度数": freq, "相対度数": freq / num_trial}, index=pd.Index(np.arange(1, 7), name="出目")
+)
+#+end_src
+
+#+RESULTS:
+:     度数  相対度数
+: 出目
+: 1    5  0.05
+: 2    9  0.09
+: 3   13  0.13
+: 4   27  0.27
+: 5   19  0.19
+: 6   27  0.27
+
+#+begin_src jupyter-python :session py :async yes
+fig = plt.figure(figsize=(10, 6))
+ax = fig.add_subplot(111)
+ax.hist(sample, bins=6, range=(1, 7), density=True, rwidth=0.8)
+# 真の確率分布を横線で表示
+ax.hlines(prob, np.arange(1, 7), np.arange(2, 8), colors="gray")
+# 棒グラフの [1,5, 2.5, ..., 6.5] の場所に目盛りをつける
+ax.set_xticks(np.linspace(1.5, 6.5, 6))
+# 目盛りの値は [1, 2, 3, 4, 5, 6]
+ax.set_xticklabels(np.arange(1, 7))
+ax.set_xlabel("Number")
+ax.set_ylabel("Relative Frequency")
+plt.show()
+#+end_src
+
+#+RESULTS:
+[[file:./.ob-jupyter/6d9b6790fa77a2e6e51d9a7e3a0328794cc56e3a.png]]
+
+#+begin_src jupyter-python :session py :async yes
+num_trial = 10000
+sample = np.random.choice(dice, num_trial, p=prob)
+
+fig = plt.figure(figsize=(10, 6))
+ax = fig.add_subplot(111)
+ax.hist(sample, bins=6, range=(1, 7), density=True, rwidth=0.8)
+ax.hlines(prob, np.arange(1, 7), np.arange(2, 8), colors="gray")
+ax.set_xticks(np.linspace(1.5, 6.5, 6))
+ax.set_xticklabels(np.arange(1, 7))
+ax.set_xlabel("Number")
+ax.set_ylabel("Relative Frequency")
+plt.show()
+#+end_src
+
+#+RESULTS:
+[[file:./.ob-jupyter/0fb67860a3cc66a476bd656f2b35f7289d57074a.png]]
+
+#+begin_src jupyter-python :session py :async yes
+fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.hist(scores, bins=100, range=(0, 100), density=True)
+ax.set_xlim(20, 100)
+ax.set_ylim(0, 0.042)
+ax.set_xlabel("Scores")
+ax.set_ylabel("Relative Frequency")
+plt.show()
+#+end_src
+
+#+RESULTS:
+[[file:./.ob-jupyter/b3ba8375884d2924b02787d2b42aa4de8ac427c7.png]]
+
+#+begin_src jupyter-python :session py :async yes
+np.random.choice(scores)
+#+end_src
+
+#+RESULTS:
+: 63
+
+#+begin_src jupyter-python :session py :async yes
+sample = np.random.choice(scores, 10000)
+
+fig = plt.figure(figsize=(10, 6))
+ax = fig.add_subplot(111)
+ax.hist(sample, bins=100, range=(0, 100), density=True)
+ax.set_xlim(20, 100)
+ax.set_ylim(0, 0.042)
+ax.set_xlabel("Scores")
+ax.set_ylabel("Relative Frequency")
+plt.show()
+#+end_src
+
+#+RESULTS:
+[[file:./.ob-jupyter/bf7197a8ef7e9778e85800b6b940a5a7a1fab3dc.png]]
+
+#+begin_src jupyter-python :session py :async yes
+sample_means = [np.random.choice(scores, 20).mean() for _ in range(10000)]
+
+fig = plt.figure(figsize=(10, 6))
+ax = fig.add_subplot(111)
+ax.hist(sample_means, bins=100, range=(0, 100), density=True)
+# 母平均を縦線で表示
+ax.vlines(np.mean(scores), 0, 1, "gray")
+ax.set_xlim(50, 90)
+ax.set_ylim(0, 0.13)
+ax.set_xlabel('Scores')
+ax.set_ylabel('Relative Frequency')
+plt.show()
+#+end_src
+
+#+RESULTS:
+[[file:./.ob-jupyter/0ed9c97056de71b4e931a2c990dffedc656162b6.png]]

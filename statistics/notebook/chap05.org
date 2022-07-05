@@ -1,0 +1,247 @@
+#+BEGIN_SRC jupyter-python :session py :async yes
+import numpy as np
+import matplotlib.pyplot as plt
+
+%precision 3
+%matplotlib inline
+#+END_SRC
+
+#+RESULTS:
+
+#+begin_src jupyter-python :session py :async yes
+x_set = np.array([1, 2, 3, 4, 5, 6])
+#+end_src
+
+#+RESULTS:
+
+#+begin_src jupyter-python :session py :async yes
+def f(x):
+    if x in x_set:
+        return x / 21
+    else:
+        return 0
+#+end_src
+
+#+RESULTS:
+
+#+begin_src jupyter-python :session py :async yes
+X = [x_set, f]
+#+end_src
+
+#+RESULTS:
+
+#+begin_src jupyter-python :session py :async yes
+# 確率 p_k を求める
+prob = np.array([f(x_k) for x_k in x_set])
+# x_k と p_k の対応を辞書型にして表示
+dict(zip(x_set, prob))
+#+end_src
+
+#+RESULTS:
+| 1: | 0.047619047619047616 | 2: | 0.09523809523809523 | 3: | 0.14285714285714285 | 4: | 0.19047619047619047 | 5: | 0.23809523809523808 | 6: | 0.2857142857142857 |
+
+#+begin_src jupyter-python :session py :async yes
+fig = plt.figure(figsize=(10, 6))
+ax = fig.add_subplot(111)
+ax.bar(x_set, prob)
+ax.set_xlabel("Value")
+ax.set_ylabel("Probability")
+#+end_src
+
+#+RESULTS:
+:RESULTS:
+: Text(0, 0.5, 'Probability')
+[[file:./.ob-jupyter/7f94dfe60464ac0454be3da2fbc8ee3c3b38c5b0.png]]
+:END:
+
+#+begin_src jupyter-python :session py :async yes
+np.all(prob >= 0)
+#+end_src
+
+#+RESULTS:
+: True
+
+#+begin_src jupyter-python :session py :async yes
+np.sum(prob)
+#+end_src
+
+#+RESULTS:
+: 0.9999999999999999
+
+#+begin_src jupyter-python :session py :async yes
+def F(x):
+    return np.sum([f(x_k) for x_k in x_set if x_k <= x])
+#+end_src
+
+#+RESULTS:
+
+#+begin_src jupyter-python :session py :async yes
+F(3)
+#+end_src
+
+#+RESULTS:
+: 0.2857142857142857
+
+#+begin_src jupyter-python :session py :async yes
+y_set = np.array([2 * x_k + 3 for x_k in x_set])
+prob = np.array([f(x_k) for x_k in x_set])
+dict(zip(y_set, prob))
+#+end_src
+
+#+RESULTS:
+| 5: | 0.047619047619047616 | 7: | 0.09523809523809523 | 9: | 0.14285714285714285 | 11: | 0.19047619047619047 | 13: | 0.23809523809523808 | 15: | 0.2857142857142857 |
+
+#+begin_src jupyter-python :session py :async yes
+np.sum([x_k * f(x_k) for x_k in x_set])
+#+end_src
+
+#+RESULTS:
+: 4.333333333333333
+
+#+begin_src jupyter-python :session py :async yes
+sample = np.random.choice(x_set, int(1e6), p=prob)
+np.mean(sample)
+#+end_src
+
+#+RESULTS:
+: 4.329892
+
+#+begin_src jupyter-python :session py :async yes
+def E(X, g=lambda x: x):
+    x_set, f = X
+    return np.sum([g(x_k) * f(x_k) for x_k in x_set])
+#+end_src
+
+#+RESULTS:
+
+#+begin_src jupyter-python :session py :async yes
+E(X)
+#+end_src
+
+#+RESULTS:
+: 4.333333333333333
+
+#+begin_src jupyter-python :session py :async yes
+E(X, g=lambda x: 2 * x + 3)
+#+end_src
+
+#+RESULTS:
+: 11.666666666666664
+
+#+begin_src jupyter-python :session py :async yes
+2 * E(X) + 3
+#+end_src
+
+#+RESULTS:
+: 11.666666666666666
+
+#+begin_src jupyter-python :session py :async yes
+mean = E(X)
+np.sum([(x_k - mean) ** 2 * f(x_k) for x_k in x_set])
+#+end_src
+
+#+RESULTS:
+: 2.2222222222222223
+
+#+begin_src jupyter-python :session py :async yes
+def V(X, g=lambda x: x):
+    x_set, f = X
+    mean = E(X, g)
+    return np.sum([(g(x_k) - mean) ** 2 * f(x_k) for x_k in x_set])
+#+end_src
+
+#+RESULTS:
+
+#+begin_src jupyter-python :session py :async yes
+V(X)
+#+end_src
+
+#+RESULTS:
+: 2.2222222222222223
+
+#+begin_src jupyter-python :session py :async yes
+V(X, lambda x: 2 * x + 3)
+#+end_src
+
+#+RESULTS:
+: 8.88888888888889
+
+#+begin_src jupyter-python :session py :async yes
+2 ** 2 * V(X)
+#+end_src
+
+#+RESULTS:
+: 8.88888888888889
+
+#+begin_src jupyter-python :session py :async yes
+x_set = np.arange(2, 13)
+y_set = np.arange(1, 7)
+#+end_src
+
+#+RESULTS:
+
+#+begin_src jupyter-python :session py :async yes
+def f_XY(x, y):
+    if 1 <= y and 1 <= x - y <= 6:
+        return y * (x - y) / 441
+    else:
+        return 0
+#+end_src
+
+#+RESULTS:
+
+#+begin_src jupyter-python :session py :async yes
+XY = [x_set, y_set, f_XY]
+#+end_src
+
+#+RESULTS:
+
+#+begin_src jupyter-python :session py :async yes
+prob = np.array([f_XY(x_i, y_j) for y_j in y_set for x_i in x_set])
+fig = plt.figure(figsize=(10, 8))
+ax = fig.add_subplot(111)
+c = ax.pcolor(prob)
+ax.set_xticks(np.arange(prob.shape[1]) + 0.5, minor=False)
+#+end_src
+
+#+RESULTS:
+:RESULTS:
+# [goto error]
+#+begin_example
+
+ValueErrorTraceback (most recent call last)
+<ipython-input-33-5ad68e04d65d> in <module>
+      2 fig = plt.figure(figsize=(10, 8))
+      3 ax = fig.add_subplot(111)
+----> 4 c = ax.pcolor(prob)
+      5 ax.set_xticks(np.arange(prob.shape[1]) + 0.5, minor=False)
+
+~/.pyenv/versions/3.7.0_hello-statistics/lib/python3.7/site-packages/matplotlib/__init__.py in inner(ax, data, *args, **kwargs)
+   1563     def inner(ax, *args, data=None, **kwargs):
+   1564         if data is None:
+-> 1565             return func(ax, *map(sanitize_sequence, args), **kwargs)
+   1566
+   1567         bound = new_sig.bind(ax, *args, **kwargs)
+
+~/.pyenv/versions/3.7.0_hello-statistics/lib/python3.7/site-packages/matplotlib/axes/_axes.py in pcolor(self, alpha, norm, cmap, vmin, vmax, *args, **kwargs)
+   5835         always discards the last row and column of *C*.
+   5836         """
+-> 5837         X, Y, C = self._pcolorargs('pcolor', *args, allmatch=False)
+   5838         Ny, Nx = X.shape
+   5839
+
+~/.pyenv/versions/3.7.0_hello-statistics/lib/python3.7/site-packages/matplotlib/axes/_axes.py in _pcolorargs(funcname, allmatch, *args)
+   5643         if len(args) == 1:
+   5644             C = np.asanyarray(args[0])
+-> 5645             nrows, ncols = C.shape
+   5646             if allmatch:
+   5647                 X, Y = np.meshgrid(np.arange(ncols), np.arange(nrows))
+
+ValueError: not enough values to unpack (expected 2, got 1)
+#+end_example
+[[file:./.ob-jupyter/cde5323524ec958fd23f6deebcf6c7cd71d18970.png]]
+:END:
+
+#+begin_src jupyter-python :session py :async yes
+
+#+end_src

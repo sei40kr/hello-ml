@@ -1,0 +1,57 @@
+#+BEGIN_SRC jupyter-python :session py :async yes
+# Pandas を pd という名前でインポートする
+import pandas as pd
+#+END_SRC
+
+#+RESULTS:
+
+#+begin_src jupyter-python :session py :async yes
+# 生徒番号をインデックスとして csv ファイルを読み込み、変数 df に格納
+df = pd.read_csv('../data/ch1_sport_test.csv', index_col='生徒番号')
+
+# 変数 df を表示
+df
+#+end_src
+
+#+RESULTS:
+#+begin_example
+      学年    握力  上体起こし  点数  順位
+生徒番号
+1      1  40.2     34  15   4
+2      1  34.2     14   7  10
+3      1  28.8     27  11   7
+4      2  39.0     27  14   5
+5      2  50.9     32  17   2
+6      2  36.5     20   9   9
+7      3  36.6     31  13   6
+8      3  49.2     37  18   1
+9      3  26.0     28  10   8
+10     3  47.4     32  16   3
+#+end_example
+
+#+begin_src jupyter-python :session py :async yes
+df['握力']
+#+end_src
+
+#+RESULTS:
+#+begin_example
+生徒番号
+1     40.2
+2     34.2
+3     28.8
+4     39.0
+5     50.9
+6     36.5
+7     36.6
+8     49.2
+9     26.0
+10    47.4
+Name: 握力, dtype: float64
+#+end_example
+
+#+begin_src jupyter-python :session py :async yes
+df.shape
+#+end_src
+
+#+RESULTS:
+| 10 | 5 |

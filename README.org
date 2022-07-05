@@ -1,8 +1,0 @@
-#+TITLE: hello-ml
-
-Where I learn Machine Learning.
-
-** References
-
-- やさしく学ぶ 機械学習を理解するための数学のきほん
-- やさしく学ぶ ディープラーニングがわかる数学のきほん
