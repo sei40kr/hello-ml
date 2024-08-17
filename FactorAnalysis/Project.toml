@@ -1,0 +1,8 @@
+name = "FactorAnalysis"
+uuid = "6e45cddf-f29f-4d27-903b-f09bf046f191"
+authors = ["Seong Yong-ju <sei40kr@gmail.com>"]
+version = "0.1.0"
+
+[deps]
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
