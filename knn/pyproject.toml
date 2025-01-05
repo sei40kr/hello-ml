@@ -1,0 +1,12 @@
+[project]
+name = "knn"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.12"
+dependencies = []
+
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
+
+typeCheckingMode = "standard"
