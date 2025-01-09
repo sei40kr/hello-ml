@@ -38,8 +38,11 @@ class NaiveBayesClassifier(Generic[FeatureType, TargetType]):
         Train the model
 
         Parameters:
-            X: Feature matrix
-            y: Target array
+            X: Feature matrix of shape (n, m)
+            y: Target array of shape (n)
+        where:
+            n: Number of samples
+            m: Number of features
         """
         n_samples = len(y)
 
@@ -68,7 +71,9 @@ class NaiveBayesClassifier(Generic[FeatureType, TargetType]):
         """Calculate posterior probabilities for each class
 
         Args:
-            x: Feature vector to predict
+            x: Feature vector to predict of shape (m)
+        where:
+            m: Number of features
 
         Returns:
             Prediction probabilities for each class
@@ -98,7 +103,9 @@ class NaiveBayesClassifier(Generic[FeatureType, TargetType]):
         """Predict the most probable class
 
         Args:
-            x: Feature vector to predict
+            x: Feature vector to predict of shape (m)
+        where:
+            m: Number of features
 
         Returns:
             Predicted class
