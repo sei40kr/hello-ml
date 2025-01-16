@@ -1,4 +1,4 @@
-from typing import TypeVar
+from typing import TypeVar, cast, overload
 import numpy as np
 import numpy.typing as npt
 
@@ -102,3 +102,58 @@ def f1_score(y_true: npt.NDArray[T], y_pred: npt.NDArray[T]) -> float:
     return (
         2 * precision * recall / (precision + recall) if 0 < precision + recall else 0.0
     )
+
+
+@overload
+def confusion_matrix(
+    y_true: npt.NDArray[np.str_],
+    y_pred: npt.NDArray[np.str_],
+    labels: list[str] | None = None,
+) -> npt.NDArray[np.int64]: ...
+
+
+@overload
+def confusion_matrix(
+    y_true: npt.NDArray[np.int64],
+    y_pred: npt.NDArray[np.int64],
+    labels: None = None,
+) -> npt.NDArray[np.int64]: ...
+
+
+def confusion_matrix(
+    y_true: npt.NDArray[np.int64 | np.str_],
+    y_pred: npt.NDArray[np.int64 | np.str_],
+    labels: list[str] | None = None,
+) -> npt.NDArray[np.int64]:
+    """
+    Compute confusion matrix.
+
+    Parameters
+    ----------
+    y_true : array-like of shape (n_samples,)
+        Ground truth target values.
+    y_pred : array-like of shape (n_samples,)
+        Predicted target values.
+
+    Returns
+    -------
+    cm : array-like of shape (n_classes, n_classes)
+        Confusion matrix
+    """
+    if y_true.shape != y_pred.shape:
+        raise ValueError("Input arrays must have the same shape")
+
+    labels_ = (
+        cast(list[str], np.unique(np.concatenate([y_true, y_pred])).tolist())
+        if labels is None
+        else labels
+    )
+
+    label_to_index = {label: i for i, label in enumerate(labels_)}
+    cm = np.zeros((len(labels_), len(labels_)), dtype=np.int64)
+
+    for true, pred in zip(y_true, y_pred):
+        if true in label_to_index and pred in label_to_index:
+            cm[label_to_index[true], label_to_index[pred]] += 1
+
+    return cm
