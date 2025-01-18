@@ -1,0 +1,19 @@
+[project]
+name = "k-means"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.12"
+dependencies = [
+    "matplotlib>=3.10.0",
+    "mllib",
+    "numpy>=2.2.1",
+]
+
+[tool.uv.sources]
+mllib = { path = "../mllib", editable = true }
+
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
+
+typeCheckingMode = "standard"
