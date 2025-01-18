@@ -1,4 +1,4 @@
-from typing import TypeVar, cast, overload
+from typing import Any, TypeVar, cast, overload
 import numpy as np
 import numpy.typing as npt
 
@@ -157,3 +157,60 @@ def confusion_matrix(
             cm[label_to_index[true], label_to_index[pred]] += 1
 
     return cm
+
+
+def silhouette_score(
+    X: npt.NDArray[np.floating[Any]], labels: npt.NDArray[np.int_ | np.str_]
+) -> float:
+    """
+    Compute the silhouette score.
+
+    The silhouette score for a point i is defined as:
+        s(i) = (b(i) - a(i)) / max(a(i), b(i))
+    where:
+        a(i) = mean distance to points in same cluster
+        b(i) = mean distance to points in nearest different cluster
+
+    Parameters
+    ----------
+    X : array-like of shape (n_samples, n_features)
+        Input data array
+    labels : array-like of shape (n_samples,)
+        Cluster labels
+
+    Returns
+    -------
+    silhouette_score : float
+        Mean silhouette score across all samples (higher is better)
+    """
+    n_samples = X.shape[0]
+
+    distances = np.zeros((n_samples, n_samples))
+    for i in range(n_samples):
+        distances[i] = np.sqrt(np.sum((X - X[i]) ** 2, axis=1)) ** 0.5
+
+    silhouette_scores = np.zeros(n_samples)
+
+    for i in range(n_samples):
+        same_cluster_mask = (labels == labels[i]) & (np.arange(n_samples) != i)
+
+        a = (
+            np.mean(distances[i, same_cluster_mask], dtype=np.float64)
+            if np.sum(same_cluster_mask) > 0
+            else 0.0
+        )
+        b = float("inf")
+        for label in np.unique(labels):
+            if label == labels[i]:
+                continue
+
+            other_cluster_mask = labels == label
+            if np.sum(other_cluster_mask) > 0:
+                mean_dist = np.mean(distances[i, other_cluster_mask])
+                b = min(b, mean_dist)
+
+        silhouette_scores[i] = (
+            (b - a) / max(a, b) if a != 0 or b != float("inf") else 0.0
+        )
+
+    return np.mean(silhouette_scores, dtype=np.float64)
