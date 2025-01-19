@@ -12,11 +12,11 @@ dependencies = [
     "ucimlrepo>=0.0.7",
 ]
 
+[tool.uv.sources]
+mllib = { path = "../ml-lib", editable = true }
+
 [tool.pyright]
 venvPath = "."
 venv = ".venv"
 
 typeCheckingMode = "standard"
-
-[tool.uv.sources]
-mllib = { path = "../ml-lib" }

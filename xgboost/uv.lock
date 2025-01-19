@@ -40,7 +40,7 @@ wheels = [
 [[package]]
 name = "mllib"
 version = "0.1.0"
-source = { directory = "../ml-lib" }
+source = { editable = "../ml-lib" }
 dependencies = [
     { name = "numpy" },
     { name = "pandas" },
@@ -296,7 +296,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "mllib", directory = "../ml-lib" },
+    { name = "mllib", editable = "../ml-lib" },
     { name = "numpy", specifier = ">=2.2.1" },
     { name = "pandas", specifier = ">=2.2.3" },
     { name = "scikit-learn", specifier = ">=1.6.1" },
