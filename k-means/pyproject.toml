@@ -10,7 +10,7 @@ dependencies = [
 ]
 
 [tool.uv.sources]
-mllib = { path = "../mllib", editable = true }
+mllib = { path = "../ml-lib", editable = true }
 
 [tool.pyright]
 venvPath = "."

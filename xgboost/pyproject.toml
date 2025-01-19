@@ -19,4 +19,4 @@ venv = ".venv"
 typeCheckingMode = "standard"
 
 [tool.uv.sources]
-mllib = { path = "../mllib" }
+mllib = { path = "../ml-lib" }
